@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import { db } from "../config/firebase"; // 1. Import your Firestore instance
+import { collection, addDoc, serverTimestamp } from "firebase/firestore"; // 2. Import Firestore functions
+import { useAuth } from "../context/auth"; // 3. Import useAuth to get the user
 
 const Form = () => {
-  const [formData, setFormData] = useState({
+  const initialState = {
     businessName: "",
     category: "",
     description: "",
@@ -9,7 +12,15 @@ const Form = () => {
     maxPrice: "",
     targetCustomers: [],
     location: "",
-  });
+  };
+
+  const [formData, setFormData] = useState(initialState);
+  // 4. Add state for loading and feedback messages
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const { currentUser } = useAuth(); // Get the logged-in user from your context
 
   const handleChange = (e) => {
     setFormData({
@@ -29,9 +40,37 @@ const Form = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  // 5. Update handleSubmit to be an async function
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Business Form Submitted:", formData);
+    
+    // Check if a user is logged in
+    if (!currentUser) {
+        setError("You must be logged in to submit this form.");
+        return;
+    }
+
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      // 6. Add the form data to a "businesses" collection in Firestore
+      const docRef = await addDoc(collection(db, "businesses"), {
+        ...formData,
+        ownerId: currentUser.uid, // Tag the data with the user's ID
+        createdAt: serverTimestamp(), // Add a server-side timestamp
+      });
+
+      console.log("Document written with ID: ", docRef.id);
+      setSuccess("Form submitted successfully!");
+      setFormData(initialState); // Reset form on success
+    } catch (err) {
+      console.error("Error adding document: ", err);
+      setError("Failed to submit form. Please try again.");
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -43,6 +82,10 @@ const Form = () => {
         <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
           Business Form
         </h2>
+
+        {/* --- Feedback Messages --- */}
+        {error && <p className="bg-red-100 text-red-700 p-3 rounded-md mb-4 text-center">{error}</p>}
+        {success && <p className="bg-green-100 text-green-700 p-3 rounded-md mb-4 text-center">{success}</p>}
 
         {/* Business Name */}
         <div className="mb-4">
@@ -116,14 +159,11 @@ const Form = () => {
               required
             />
           </div>
-          <p className="text-sm text-gray-500 mt-1">
-            Example: ₹500 – ₹2000
-          </p>
         </div>
 
         {/* Target Customer Type */}
         <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Target Customer Types</label>
+          <label className="block text-gray-700 mb-2">Target Customer Type</label>
           <div className="space-y-2">
             {["Students / Youth", "Families", "Professionals", "Tourists"].map((type) => (
               <label key={type} className="flex items-center space-x-2">
@@ -157,9 +197,10 @@ const Form = () => {
         {/* Submit */}
         <button
           type="submit"
-          className="w-full bg-red-500 text-white py-2 rounded-lg font-semibold hover:bg-red-600 transition-colors"
+          disabled={loading}
+          className="w-full bg-red-500 text-white py-2 rounded-lg font-semibold hover:bg-red-600 transition-colors disabled:bg-red-300"
         >
-          Submit
+          {loading ? "Submitting..." : "Submit"}
         </button>
       </form>
     </div>
