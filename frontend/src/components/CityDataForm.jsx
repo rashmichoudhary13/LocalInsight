@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CityDataForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     business_category: "",
     city: "",
@@ -16,11 +18,29 @@ const CityDataForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("City Data:", formData);
-    // 📊 Send to backend or save to CSV/Database
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/predict_city", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("frontend Prediction:", data);
+        navigate("/dashboard", { state: { locations: [data] } });
+      } else {
+        alert(`Prediction: ${data.predicted_category}`);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Failed to fetch prediction.");
+    }
   };
+
 
   const cities = [
     "Ahmednagar", "Achalpur", "Akola", "Ambarnath", "Amravati", "Badlapur",
@@ -57,8 +77,6 @@ const CityDataForm = () => {
         <option value="cafe">Cafe</option>
         <option value="shoes">Shoes</option>
         <option value="watch">Watch</option>
-        <option value="salon">Salon</option>
-        <option value="clothing">Clothing</option>
       </select>
 
       {/* City Dropdown */}
@@ -79,7 +97,7 @@ const CityDataForm = () => {
       </select>
 
       {/* Optional Fields */}
-      {[
+      {/* {[
         "avg_income",
         "population",
         "rent",
@@ -99,13 +117,13 @@ const CityDataForm = () => {
             className="border p-2 rounded w-full mb-3"
           />
         </div>
-      ))}
+      ))} */}
 
       <button
         type="submit"
         className="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 transition-all"
       >
-        Save City Data
+        Evaluate City
       </button>
     </form>
   );

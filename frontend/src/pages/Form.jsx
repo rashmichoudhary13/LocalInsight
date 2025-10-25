@@ -20,7 +20,7 @@ const Form = () => {
                 : "text-gray-700 hover:bg-gray-200"
             }`}
           >
-            User Form
+            Predict Location
           </button>
           <button
             onClick={() => setActiveTab("city")}
@@ -30,7 +30,7 @@ const Form = () => {
                 : "text-gray-700 hover:bg-gray-200"
             }`}
           >
-            City Data Form
+            Evaluate City
           </button>
         </div>
 
