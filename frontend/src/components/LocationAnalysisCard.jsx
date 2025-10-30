@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion"; // ✨ for animation
+import { motion } from "framer-motion";
 
 // --- Icon Components ---
 const UsersIcon = ({ className }) => (
@@ -59,8 +59,6 @@ const FootprintsIcon = ({ className }) => (
     <path d="M10.68 18H8.32C6.5 18 5 16.57 5 14.82V14" />
     <path d="M12 20v-3.41c0-1.5 1.2-2.72 2.66-2.72h1.62c.9 0 1.7.54 2.06 1.35L20 20" />
     <path d="M18.68 22H16.32c-1.82 0-3.32-1.43-3.32-3.18V18" />
-    <path d="M9.62 3.38c.2-.6 1-1.38 2.38-1.38 1.6 0 2.4.92 2.4 2.32 0 1.6-1.4 3.68-2.4 3.68-1.18 0-2.18-2.08-2.38-3.62Z" />
-    <path d="M17.62 7.38c.2-.6 1-1.38 2.38-1.38 1.6 0 2.4.92 2.4 2.32 0 1.6-1.4 3.68-2.4 3.68-1.18 0-2.18-2.08-2.38-3.62Z" />
   </svg>
 );
 
@@ -103,7 +101,7 @@ const CircularProgress = ({ score }) => {
   );
 };
 
-// --- Main Card Component ---
+// --- Main Card ---
 function LocationAnalysisCard({ data }) {
   if (!data) return null;
   const isUserFormResult = data.opportunity_score !== undefined;
@@ -130,17 +128,13 @@ function LocationAnalysisCard({ data }) {
 // --- UserForm Layout ---
 const UserFormCardContent = ({ data, formatNumber }) => (
   <>
-    <h2 className="text-3xl font-bold text-white mb-1 capitalize">
-      {data.City || data.city}
-    </h2>
+    <h2 className="text-3xl font-bold text-white mb-1 capitalize">{data.City || data.city}</h2>
     <p className="text-lg text-cyan-400 mb-4 capitalize">{data.District}</p>
 
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="space-y-4">
-        <InfoBlock icon={<FootprintsIcon className="w-6 h-6 text-cyan-400" />}
-          label="Footfalls per Month" value={formatNumber(data.FootFalls_per_month)} />
-        <InfoBlock icon={<DollarSignIcon className="w-6 h-6 text-green-400" />}
-          label="Avg. Income" value={`₹${formatNumber(data.avg_income)}`} />
+        <InfoBlock icon={<FootprintsIcon className="w-6 h-6 text-cyan-400" />} label="Footfalls per Month" value={formatNumber(data.FootFalls_per_month)} />
+        <InfoBlock icon={<DollarSignIcon className="w-6 h-6 text-green-400" />} label="Avg. Income" value={`₹${formatNumber(data.avg_income)}`} />
       </div>
       <div className="flex flex-col items-center justify-center">
         <h3 className="text-sm font-semibold text-gray-400 mb-2">Opportunity Score</h3>
@@ -151,20 +145,16 @@ const UserFormCardContent = ({ data, formatNumber }) => (
     <div className="mt-6 border-t border-gray-700 pt-4">
       <h3 className="text-lg font-semibold text-white mb-3">Key Insights</h3>
       <div className="space-y-3">
-        <InfoRow icon={<UsersIcon className="w-5 h-5 text-cyan-400" />}
-          label="Youth Ratio" value={`${((data.Youth_Ratio || 0) * 100).toFixed(1)}%`} />
-        <InfoRow icon={<HomeIcon className="w-5 h-5 text-cyan-400" />}
-          label="Monthly Rent" value={`₹${formatNumber(data.Rent)}`} />
-        <InfoRow icon={<BriefcaseIcon className="w-5 h-5 text-cyan-400" />}
-          label="Product Type" value={data.product_type} capitalize />
-        <InfoRow icon={<StoreIcon className="w-5 h-5 text-cyan-400" />}
-          label="Similar Shops Nearby" value={data.similar_shop} />
+        <InfoRow icon={<UsersIcon className="w-5 h-5 text-cyan-400" />} label="Youth Ratio" value={`${((data.Youth_Ratio || 0) * 100).toFixed(1)}%`} />
+        <InfoRow icon={<HomeIcon className="w-5 h-5 text-cyan-400" />} label="Monthly Rent" value={`₹${formatNumber(data.Rent)}`} />
+        <InfoRow icon={<BriefcaseIcon className="w-5 h-5 text-cyan-400" />} label="Product Type" value={data.product_type} capitalize />
+        <InfoRow icon={<StoreIcon className="w-5 h-5 text-cyan-400" />} label="Similar Shops Nearby" value={data.similar_shop} />
       </div>
     </div>
   </>
 );
 
-// --- CityData Layout ---
+// --- CityData Layout (With Gemini Insight) ---
 const CityDataFormCardContent = ({ data }) => {
   const successCategory = data.predicted_category || "N/A";
   let categoryColor = "bg-gray-500";
@@ -178,8 +168,7 @@ const CityDataFormCardContent = ({ data }) => {
         {data.city || data.City}
       </h2>
       <div className="space-y-4">
-        <InfoBlock icon={<BriefcaseIcon className="w-6 h-6 text-cyan-400" />}
-          label="Business Type" value={data.product_type} />
+        <InfoBlock icon={<BriefcaseIcon className="w-6 h-6 text-cyan-400" />} label="Business Type" value={data.product_type} />
         <div className="flex items-center justify-between p-3 bg-gray-700/50 rounded-lg">
           <div className="flex items-center space-x-3">
             <ZapIcon className="w-6 h-6 text-cyan-400" />
@@ -189,6 +178,19 @@ const CityDataFormCardContent = ({ data }) => {
             {data.predicted_category}
           </span>
         </div>
+
+        {/* ✅ AI Insights Section */}
+        {data.insights && (
+          <motion.div
+            className="mt-6 bg-gradient-to-br from-cyan-900/30 to-gray-800/50 border border-cyan-700/40 p-4 rounded-xl text-gray-200 shadow-inner"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            <h3 className="text-lg font-semibold text-cyan-400 mb-2">AI Business Insight</h3>
+            <p className="text-sm leading-relaxed whitespace-pre-line">{data.insights}</p>
+          </motion.div>
+        )}
       </div>
     </>
   );
