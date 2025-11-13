@@ -4,19 +4,18 @@ import pandas as pd
 import numpy as np
 from flask_cors import CORS
 import os
-from dotenv import load_dotenv  # ✅ Load environment variables
+from dotenv import load_dotenv  
 import google.generativeai as genai
 import requests
 
-# 🔹 Initialize Flask and enable CORS
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
 
-# 🔹 Load environment variables from .env file
+#load environment
 load_dotenv()
 
 # -------- Configuration --------
-SERPAPI_KEY = os.getenv("SERP_API_KEY")  # <--- set this in your environment
+SERPAPI_KEY = os.getenv("SERP_API_KEY")  
 SERPAPI_URL = "https://serpapi.com/search"
 
 # 🔹 Configure Gemini API key
@@ -46,27 +45,23 @@ def fetch_top_shops_from_serpapi(city: str, category: str, top_n: int = 3):
         return {"error": f"SerpAPI request failed: {str(e)}"}
 
     results = []
-    # SerpAPI returns 'local_results' or 'local_results' may be nested under 'local_results' keys.
+   
     local_results = data.get("local_results") or data.get("local_results", []) or data.get("places_results") or []
 
-    # fallback: SerpAPI sometimes returns 'organic_results' with place info; handle defensively
+  
     if not local_results:
-        # try alternate key names
         local_results = data.get("maps_results") or data.get("places") or []
 
     # Parse top results
     for item in (local_results or [])[:top_n]:
-        # fields vary by engine/version, so use get with fallbacks
         title = item.get("title") or item.get("name") or item.get("position") or "Unknown"
         address = item.get("address") or item.get("snippet") or item.get("vicinity") or item.get("locality") or ""
         rating = item.get("rating") or item.get("gps_rating") or None
 
-        # SerpAPI may provide 'reviews' list or 'review_count'
         reviews_list = item.get("reviews") or item.get("reviews_snippet") or []
         if isinstance(reviews_list, list):
             reviews_count = len(reviews_list)
         else:
-            # sometimes there's direct review_count or 'reviews' is an int
             reviews_count = item.get("review_count") or item.get("reviews_count") or None
             if isinstance(reviews_count, str) and reviews_count.isdigit():
                 reviews_count = int(reviews_count)
@@ -85,10 +80,9 @@ def fetch_top_shops_from_serpapi(city: str, category: str, top_n: int = 3):
         if link and link.startswith("ChI") and not link.startswith("http"):
             link = f"https://www.google.com/maps/search/?api=1&query=google&query_place_id={link}"
 
-        # Flatten review snippets (if any) to simple list of dicts (text, user, rating)
         parsed_reviews = []
         if isinstance(reviews_list, list):
-            for r in reviews_list[:5]:  # cap to 5 reviews to reduce payload
+            for r in reviews_list[:5]:  
                 parsed_reviews.append({
                     "author": r.get("author") or r.get("user") or None,
                     "rating": r.get("rating"),
@@ -116,13 +110,13 @@ def fetch_top_shops_from_serpapi(city: str, category: str, top_n: int = 3):
 if api_key:
     try:
         genai.configure(api_key=api_key)
-        gemini_model = genai.GenerativeModel("gemini-2.5-flash")  # ✅ Free-tier model
+        gemini_model = genai.GenerativeModel("gemini-2.5-flash")  
         print("✅ Gemini API configured successfully.")
     except Exception as e:
-        print(f"⚠️ Gemini configuration error: {e}")
+        print(f"Gemini configuration error: {e}")
         gemini_model = None
 else:
-    print("⚠️ GEMINI_API_KEY not found in .env file.")
+    print("GEMINI_API_KEY not found in .env file.")
     gemini_model = None
 
 # 🔹 Load datasets and ML model
@@ -162,7 +156,7 @@ def make_json_serializable(obj):
     return obj
 
 
-# 🧭 Route 1: Predict top 5 locations
+# Route 1: Predict top 5 locations
 @app.route("/api/predict_location", methods=["POST"])
 def predict_location():
     data = request.get_json()
@@ -171,12 +165,14 @@ def predict_location():
     investment_max = float(data.get("investment_max", 0))
     preferred_district = data.get("preferred_district", "")
 
-    # Filter dataset
+    # Filter dataset based on category
     filtered = ranked_df[ranked_df["product_type"].str.lower() == business_category.lower()]
-
+    
+    # Filter based on district
     if preferred_district:
         filtered = filtered[filtered["District"].str.lower() == preferred_district.lower()]
-
+        
+    # Sort the filtered result
     filtered = filtered.sort_values(by="opportunity_score", ascending=False)
     top_locations = filtered.head(5).to_dict(orient="records")
 
@@ -186,7 +182,7 @@ def predict_location():
     return jsonify(make_json_serializable(top_locations))
 
 
-# 🌆 Route 2: Predict city success + AI insights
+#Route 2: Predict city success + AI insights
 @app.route("/api/predict_city", methods=["POST"])
 def predict_city():
     data = request.get_json()
@@ -199,7 +195,8 @@ def predict_city():
         return jsonify({"error": f"City '{city}' not found in dataset."}), 404
 
     city_row = city_data.iloc[0]
-
+    
+    # print("City row: ", city_row)
     # Prepare input for ML model
     input_data = pd.DataFrame([{
         "avg_income": city_row["avg_income"],
@@ -210,7 +207,8 @@ def predict_city():
         "FootFalls_per_month": city_row["FootFalls_per_month"],
         "product_type": product_type
     }])
-
+    
+    # print("input data: \n", input_data)
     # Predict success level
     prediction = model_prediction.predict(input_data)[0]
 
@@ -227,7 +225,7 @@ def predict_city():
         "predicted_category": str(prediction),
     }
 
-    # 🧠 Generate Gemini AI insights
+    #  Generate Gemini AI insights
     ai_summary = "AI summary unavailable."
     if gemini_model:
         try:
@@ -251,7 +249,7 @@ def predict_city():
     # Fetch top shops via SerpAPI
     serp_res = fetch_top_shops_from_serpapi(city=city, category=product_type, top_n=3)
     if "error" in serp_res:
-        # Return prediction but include serpapi error info (frontend can decide)
+
         response_payload = {
             "city": city,
             "product_type": product_type,
