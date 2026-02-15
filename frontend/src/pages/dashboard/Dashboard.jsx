@@ -90,7 +90,7 @@ function Dashboard() {
                     {/* City Name */}
                     <h3 className={`text-2xl font-black mb-3 transition-colors ${i === 0 ? 'text-indigo-400' : 'text-white'
                       } group-hover:text-indigo-300`}>
-                      {loc.City || loc.city || "Unknown City"}
+                      {loc.Pincode || loc.pincode || "Unknown City"}
                     </h3>
 
                     {/* Footfalls */}
@@ -99,7 +99,7 @@ function Dashboard() {
                         <Activity className="w-4 h-4 text-indigo-400 animate-pulse" />
                       </div>
                       <span className="text-sm font-bold text-slate-400 group-hover:text-slate-300 transition-colors">
-                        {parseInt(loc.FootFalls_per_month || 0).toLocaleString()} <span className="text-[10px] font-medium opacity-60 ml-0.5">Footfalls</span>
+                        <span className="text-[10px] font-medium opacity-60 ml-0.5">{loc.City}</span>
                       </span>
                     </div>
 
@@ -107,7 +107,7 @@ function Dashboard() {
                     <div className="absolute top-6 right-6 flex items-center justify-center">
                       <div className={`w-14 h-14 rounded-full border-2 ${scoreColor} flex items-center justify-center relative z-10 bg-[#1a1a2e]`}>
                         <div className={`text-xs font-black font-mono ${scoreColor.split(' ')[0]}`}>
-                          {parseFloat(loc.opportunity_score).toFixed(2)}
+                          {parseFloat(loc.rank_score).toFixed(2)}
                         </div>
 
                         {/* Radar Pulse Effect */}
