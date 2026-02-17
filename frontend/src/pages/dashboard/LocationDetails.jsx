@@ -514,7 +514,11 @@ const LocationDetails = () => {
   };
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen bg-[#0a0a1a] text-white p-6 pb-20 relative overflow-x-hidden selection:bg-indigo-500/30" style={{ backgroundImage: 'linear-gradient(110deg, #1a1a2e 0%, #0a0a1a 100%)', backgroundAttachment: 'fixed' }}>
+=======
+    <div className="h-full overflow-y-auto bg-[#0a0a1a] text-white p-6 pb-20 relative overflow-x-hidden selection:bg-indigo-500/30" style={{ backgroundImage: 'linear-gradient(110deg, #1a1a2e 0%, #0a0a1a 100%)', backgroundAttachment: 'fixed' }}>
+>>>>>>> 2932df9 (feat: implement separate prediction and city dashboards with dynamic navbar visibility)
       {/* Immersive Background System */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         {/* Primary Radial Depth - Aligned with Theme */}

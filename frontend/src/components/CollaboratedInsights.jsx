@@ -51,7 +51,11 @@ const CollaboratedInsights = ({ locations }) => {
   const avgIncome = locations.reduce((acc, l) => acc + (parseInt(l.avg_income) || 0), 0) / (locations.length || 1);
 
   return (
+<<<<<<< HEAD
     <div className="mt-12 space-y-8 pb-10">
+=======
+    <div className="mt-20 space-y-8 pb-10">
+>>>>>>> 2932df9 (feat: implement separate prediction and city dashboards with dynamic navbar visibility)
       {/* Section Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -71,6 +75,7 @@ const CollaboratedInsights = ({ locations }) => {
         </div>
       </div>
 
+<<<<<<< HEAD
       {/* Overview Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
@@ -116,6 +121,21 @@ const CollaboratedInsights = ({ locations }) => {
             </h3>
 
             <div className="space-y-6">
+=======
+      {/* Main Visualization Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        {/* 1. Zone Footfall Comparison */}
+        <div className="bg-[#1a1a2e]/60 backdrop-blur-md border border-white/10 rounded-[32px] p-8 relative overflow-hidden flex flex-col">
+          <div className="absolute top-0 right-0 p-32 bg-indigo-500/5 blur-[80px] rounded-full"></div>
+          <div className="relative z-10 flex-1">
+            <h3 className="text-lg font-bold text-white mb-8 flex items-center justify-between">
+              Zone Footfall
+              <span className="text-[10px] text-slate-500 font-black uppercase tracking-widest font-mono">Monthly</span>
+            </h3>
+
+            <div className="space-y-5">
+>>>>>>> 2932df9 (feat: implement separate prediction and city dashboards with dynamic navbar visibility)
               {[...locations].sort((a, b) => (b.FootFalls_per_month || 0) - (a.FootFalls_per_month || 0)).slice(0, 5).map((loc, i) => {
                 const maxFootfall = Math.max(...locations.map(l => l.FootFalls_per_month || 1));
                 const percentage = ((loc.FootFalls_per_month || 0) / maxFootfall) * 100;
@@ -128,6 +148,7 @@ const CollaboratedInsights = ({ locations }) => {
                     transition={{ delay: i * 0.1, duration: 0.8 }}
                     className="group"
                   >
+<<<<<<< HEAD
                     <div className="flex justify-between items-center mb-2 px-1">
                       <span className="text-sm font-semibold text-slate-300 group-hover:text-white transition-colors capitalize">
                         {loc.Area || loc.City || 'Main Zone'}
@@ -136,11 +157,24 @@ const CollaboratedInsights = ({ locations }) => {
                       <span className="text-xs font-bold text-slate-500 font-mono">{parseInt(loc.FootFalls_per_month).toLocaleString()}</span>
                     </div>
                     <div className="h-2.5 bg-white/5 rounded-full overflow-hidden flex items-center px-0.5">
+=======
+                    <div className="flex justify-between items-center mb-1.5 px-1">
+                      <span className="text-xs font-semibold text-slate-300 group-hover:text-white transition-colors capitalize truncate max-w-[120px]">
+                        {loc.Area || loc.City}
+                      </span>
+                      <span className="text-[10px] font-bold text-slate-500 font-mono">{parseInt(loc.FootFalls_per_month).toLocaleString()}</span>
+                    </div>
+                    <div className="h-1.5 bg-white/5 rounded-full overflow-hidden flex items-center px-0.5">
+>>>>>>> 2932df9 (feat: implement separate prediction and city dashboards with dynamic navbar visibility)
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${percentage}%` }}
                         transition={{ delay: 0.5 + (i * 0.1), duration: 1 }}
+<<<<<<< HEAD
                         className={`h-1.5 rounded-full bg-gradient-to-r ${i === 0 ? 'from-indigo-600 to-purple-400' :
+=======
+                        className={`h-full rounded-full bg-gradient-to-r ${i === 0 ? 'from-indigo-600 to-purple-400' :
+>>>>>>> 2932df9 (feat: implement separate prediction and city dashboards with dynamic navbar visibility)
                           i === 1 ? 'from-purple-600 to-indigo-400' :
                             'from-slate-700 to-slate-500'
                           }`}
@@ -153,6 +187,7 @@ const CollaboratedInsights = ({ locations }) => {
           </div>
         </div>
 
+<<<<<<< HEAD
         {/* Score Distribution (Pie/Radial alternative) */}
         <div className="bg-[#1a1a2e]/60 backdrop-blur-md border border-white/10 rounded-[32px] p-8 relative overflow-hidden flex flex-col justify-between">
           <div className="relative z-10">
@@ -160,6 +195,63 @@ const CollaboratedInsights = ({ locations }) => {
 
             <div className="relative flex flex-col items-center py-4">
               <div className="w-48 h-48 rounded-full border-[10px] border-white/5 flex items-center justify-center relative">
+=======
+        {/* 2. Demographic Distribution (New) */}
+        <div className="bg-[#1a1a2e]/60 backdrop-blur-md border border-white/10 rounded-[32px] p-8 relative overflow-hidden flex flex-col">
+          <div className="absolute top-0 right-0 p-32 bg-purple-500/5 blur-[80px] rounded-full"></div>
+          <div className="relative z-10 flex-1 flex flex-col">
+            <h3 className="text-lg font-bold text-white mb-6">Demographics</h3>
+
+            <div className="flex-1 flex items-center justify-center relative">
+              {/* Simple CSS Donut Chart */}
+              <div className="w-40 h-40 rounded-full border-[12px] border-slate-800 relative flex items-center justify-center overflow-hidden">
+                <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+                  {/* Youth Segment */}
+                  <motion.circle
+                    cx="50" cy="50" r="40"
+                    fill="none" stroke="#818cf8" strokeWidth="20"
+                    strokeDasharray={`${(locations.reduce((acc, l) => acc + (parseFloat(l.Youth_Ratio) || 0), 0) / locations.length) * 251} 251`}
+                    initial={{ strokeDasharray: "0 251" }}
+                    animate={{ strokeDasharray: `${(locations.reduce((acc, l) => acc + (parseFloat(l.Youth_Ratio) || 0), 0) / locations.length) * 251} 251` }}
+                    transition={{ duration: 1.5, ease: "easeOut" }}
+                  />
+                </svg>
+                <div className="text-center z-10">
+                  <span className="text-3xl font-black text-white block">
+                    {Math.round((locations.reduce((acc, l) => acc + (parseFloat(l.Youth_Ratio) || 0), 0) / locations.length) * 100)}%
+                  </span>
+                  <span className="text-[8px] uppercase tracking-widest text-slate-500">Youth</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-3">
+              <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-indigo-400"></div>
+                  <span className="text-xs text-slate-300">Gen Z / Millennials</span>
+                </div>
+                <span className="text-xs font-bold text-white">Dominant</span>
+              </div>
+              <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-slate-700"></div>
+                  <span className="text-xs text-slate-300">Others</span>
+                </div>
+                <span className="text-xs font-bold text-slate-500">Secondary</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Market Health Index (Existing) */}
+        <div className="bg-[#1a1a2e]/60 backdrop-blur-md border border-white/10 rounded-[32px] p-8 relative overflow-hidden flex flex-col justify-between">
+          <div className="relative z-10">
+            <h3 className="text-lg font-bold text-white mb-6">Market Health</h3>
+
+            <div className="relative flex flex-col items-center py-4">
+              <div className="w-40 h-40 rounded-full border-[10px] border-white/5 flex items-center justify-center relative">
+>>>>>>> 2932df9 (feat: implement separate prediction and city dashboards with dynamic navbar visibility)
                 <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
                   <circle
                     cx="50" cy="50" r="45"
@@ -180,15 +272,24 @@ const CollaboratedInsights = ({ locations }) => {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.5 }}
                     animate={{ opacity: 1, scale: 1 }}
+<<<<<<< HEAD
                     className="text-4xl font-black text-white"
                   >
                     {Math.round(avgScore * 100)}%
                   </motion.div>
                   <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Viability</div>
+=======
+                    className="text-3xl font-black text-white"
+                  >
+                    {Math.round(avgScore * 100)}%
+                  </motion.div>
+                  <div className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mt-1">Viability</div>
+>>>>>>> 2932df9 (feat: implement separate prediction and city dashboards with dynamic navbar visibility)
                 </div>
               </div>
             </div>
 
+<<<<<<< HEAD
             <div className="mt-8 space-y-3">
               <HealthMetric label="Saturation" value="Low Risk" color="emerald" />
               <HealthMetric label="Competition" value="Balanced" color="amber" />
@@ -199,6 +300,13 @@ const CollaboratedInsights = ({ locations }) => {
           <button className="mt-8 w-full py-4 bg-indigo-600/10 border border-indigo-500/20 rounded-2xl text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] hover:bg-indigo-600 hover:text-white transition-all">
             Unlock Full Depth Metrics
           </button>
+=======
+            <div className="mt-8 space-y-2">
+              <HealthMetric label="Saturation" value="Low Risk" color="emerald" />
+              <HealthMetric label="Competition" value="Balanced" color="amber" />
+            </div>
+          </div>
+>>>>>>> 2932df9 (feat: implement separate prediction and city dashboards with dynamic navbar visibility)
         </div>
 
       </div>
