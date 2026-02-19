@@ -47,7 +47,7 @@ const FootfallCard = ({ data }) => {
   ];
 
   return (
-    <div className="bg-[#0a0c1b]/90 backdrop-blur-xl border border-indigo-500/20 rounded-[2.5rem] p-10 shadow-2xl shadow-indigo-500/10 text-slate-200">
+    <div className="bg-[#0a0c1b]/90 backdrop-blur-xl border border-indigo-500/20 rounded-[2.5rem] p-8 shadow-2xl shadow-indigo-500/10 text-slate-200 mb-20">
 
       {/* ================= HEADER ================= */}
       <div className="mb-10">

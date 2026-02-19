@@ -12,7 +12,7 @@ const CityDataForm = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [citiesData, setCitiesData] = useState({}); // ✅ From CSV
+  const [citiesData, setCitiesData] = useState({});
 
   // ✅ Fetch cities + pincodes from backend
   useEffect(() => {
@@ -27,7 +27,6 @@ const CityDataForm = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Reset pincode when city changes
     if (name === "city") {
       setFormData({ ...formData, city: value, pincode: "" });
     } else {
@@ -59,12 +58,7 @@ const CityDataForm = () => {
     } finally {
       setLoading(false);
     }
-  } catch (error) {
-    alert("Failed to fetch prediction. Please check backend.");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <>
@@ -156,7 +150,7 @@ const CityDataForm = () => {
         </motion.button>
       </motion.form>
     </>
-  )
+  );
 };
 
 export default CityDataForm;
