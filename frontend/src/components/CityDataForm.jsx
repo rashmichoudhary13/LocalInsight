@@ -36,34 +36,30 @@ const CityDataForm = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
+  try {
+    const response = await fetch("http://127.0.0.1:5000/api/predict_city", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
 
-    try {
-      const response = await fetch("http://127.0.0.1:5000/api/predict_city", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+    const data = await response.json();
 
-      const data = await response.json();
-
-      if (response.ok) {
-<<<<<<< HEAD
-        navigate("/dashboard", { state: { locations: [data] } });
-=======
-        localStorage.setItem("activeDashboard", "city");
-        navigate("/city-dashboard", { state: { locations: [data] } });
->>>>>>> 2932df9 (feat: implement separate prediction and city dashboards with dynamic navbar visibility)
-      } else {
-        alert(`Prediction failed: ${data.error || "Unknown error"}`);
-      }
-    } catch (error) {
-      alert("Failed to fetch prediction. Please check backend.");
-    } finally {
-      setLoading(false);
+    if (response.ok) {
+      localStorage.setItem("activeDashboard", "city");
+      // CRITICAL: Change key to predictionData to match Dashboard logic
+      navigate("/city-dashboard", { state: { predictionData: data } }); 
+    } else {
+      alert(`Prediction failed: ${data.error || "Unknown error"}`);
     }
-  };
+  } catch (error) {
+    alert("Failed to fetch prediction. Please check backend.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <>
