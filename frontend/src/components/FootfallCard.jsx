@@ -13,21 +13,19 @@ import {
 } from "recharts";
 
 const FootfallCard = ({ data }) => {
-  /* ======================
-     ACCURATE CALCULATIONS
-  ====================== */
+  if (!data) return null;
 
-  const monthly = data.footfall_monthly || 0;
+  const monthly = parseFloat(data.footfall_monthly) || 0;
 
   const dailyAvg = Math.round(monthly / 30);
 
   // Proper weekday/weekend split
   const weekdayAvg = Math.round((dailyAvg * 5) / 7);
-  const weekendAvg = Math.round((dailyAvg * 2) / 7 * 1.2); // slight boost
+  const weekendAvg = Math.round(((dailyAvg * 2) / 7) * 1.2); // slight boost
 
-  const weekendBoost = Math.round(
+  const weekendBoost = weekdayAvg > 0 ? Math.round(
     ((weekendAvg - weekdayAvg) / weekdayAvg) * 100
-  );
+  ) : 0;
 
   /* ======================
      HOURLY TREND (SCALED)
@@ -88,7 +86,7 @@ const FootfallCard = ({ data }) => {
             Avg Household Income
           </p>
           <p className="text-4xl font-black text-white">
-            ₹{Math.round(data.avg_income / 1000)}k
+            ₹{Math.round((parseFloat(data.avg_income) || 0) / 1000)}k
           </p>
           <p className="text-xs text-slate-500 mt-1">
             Purchasing power indicator
@@ -101,7 +99,7 @@ const FootfallCard = ({ data }) => {
           </p>
           <div className="w-20 h-20 ml-auto rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.4)]">
             <span className="text-2xl font-black text-white">
-              {Math.round(data.city_index_score)}
+              {Math.round(parseFloat(data.city_index_score) || 0)}
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-2">

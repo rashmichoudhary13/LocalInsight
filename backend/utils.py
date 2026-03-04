@@ -50,7 +50,7 @@ def geocode_location(location: str):
         "apiKey": GEOAPIFY_API_KEY
     }
 
-    resp = requests.get(GEOAPIFY_GEOCODE_URL, params=params, timeout=10)
+    resp = requests.get(GEOAPIFY_GEOCODE_URL, params=params, timeout=30)
     resp.raise_for_status()
     data = resp.json()
 
@@ -101,7 +101,7 @@ def fetch_subcategory_counts(subcategories, lat, lon, radius=2000):
                 "apiKey": GEOAPIFY_API_KEY
             }
 
-            resp = requests.get(GEOAPIFY_PLACES_URL, params=params, timeout=10)
+            resp = requests.get(GEOAPIFY_PLACES_URL, params=params, timeout=30)
             if resp.status_code != 200:
                 break
 
@@ -162,7 +162,7 @@ def fetch_business_counts(domain: str, location: str, radius=2000):
                 "apiKey": GEOAPIFY_API_KEY
             }
 
-            resp = requests.get(GEOAPIFY_PLACES_URL, params=params, timeout=10)
+            resp = requests.get(GEOAPIFY_PLACES_URL, params=params, timeout=30)
             if resp.status_code != 200:
                 break
 

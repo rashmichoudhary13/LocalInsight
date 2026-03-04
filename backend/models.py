@@ -13,9 +13,9 @@ with open("data/xgboost.pkl", "rb") as f:
 
 df = pd.read_csv("data/business_data_final.csv")
 
-if "avg_income" in df.columns:
-    df["avg_income"] = (
-        df["avg_income"].astype(str)  
+if "Avg_Income" in df.columns:
+    df["Avg_Income"] = (
+        df["Avg_Income"].astype(str)  
         .str.replace(",", "", regex=False)
         .astype(float)
     )

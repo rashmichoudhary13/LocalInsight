@@ -105,7 +105,7 @@ const Navbar = () => {
                 {localStorage.getItem("activeDashboard") === "prediction" && localStorage.getItem("predictionLocations") && (
                   <NavLink to="/prediction-dashboard" icon={LayoutDashboard} label="Prediction Dashboard" />
                 )}
-                {localStorage.getItem("activeDashboard") === "city" && localStorage.getItem("cityLocations") && (
+                {localStorage.getItem("activeDashboard") === "city" && localStorage.getItem("lastPrediction") && (
                   <NavLink to="/city-dashboard" icon={LayoutDashboard} label="City Dashboard" />
                 )}
                 <NavLink to="/strategy-dashboard" icon={ClipboardList} label="Strategic Roadmap" />
@@ -161,7 +161,7 @@ const Navbar = () => {
                 {localStorage.getItem("activeDashboard") === "prediction" && localStorage.getItem("predictionLocations") && (
                   <NavLink to="/prediction-dashboard" label="Prediction Dashboard" />
                 )}
-                {localStorage.getItem("activeDashboard") === "city" && localStorage.getItem("cityLocations") && (
+                {localStorage.getItem("activeDashboard") === "city" && localStorage.getItem("lastPrediction") && (
                   <NavLink to="/city-dashboard" label="City Dashboard" />
                 )}
                 <NavLink to="/strategy-dashboard" label="Strategy Dashboard" />

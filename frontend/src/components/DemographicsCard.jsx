@@ -2,18 +2,23 @@ import React from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 const DemographicsCard = ({ data }) => {
+  if (!data) return null;
+
+  const maleRatio = parseFloat(data.male_ratio) || 0;
+  const femaleRatio = parseFloat(data.female_ratio) || 0;
+
   const genderData = [
-    { name: "Male", value: data.male_ratio },
-    { name: "Female", value: data.female_ratio },
+    { name: "Male", value: maleRatio },
+    { name: "Female", value: femaleRatio },
   ];
 
   const COLORS = ["#6366f1", "#a855f7"];
 
-  const confidenceData = [
-    { label: "High", value: data.confidence_distribution.high_confidence },
-    { label: "Medium", value: data.confidence_distribution.medium_confidence },
-    { label: "Low", value: data.confidence_distribution.low_confidence },
-  ];
+  const confidenceData = data.confidence_distribution ? [
+    { label: "High", value: parseFloat(data.confidence_distribution.high_confidence) || 0 },
+    { label: "Medium", value: parseFloat(data.confidence_distribution.medium_confidence) || 0 },
+    { label: "Low", value: parseFloat(data.confidence_distribution.low_confidence) || 0 },
+  ] : [];
 
   return (
     <div className="w-full bg-[#0a0c1b]/80 backdrop-blur-xl border border-indigo-500/20 rounded-[2.5rem] p-10 shadow-2xl shadow-indigo-500/10 text-slate-200">
@@ -31,7 +36,7 @@ const DemographicsCard = ({ data }) => {
             Total Population
           </p>
           <p className="text-4xl font-black text-white">
-            {data.population.toLocaleString()}
+            {(data.population || 0).toLocaleString()}
           </p>
           <p className="text-xs text-slate-500 mt-1">
             Total residents in the target city
@@ -43,7 +48,7 @@ const DemographicsCard = ({ data }) => {
             Population Density
           </p>
           <p className="text-4xl font-black text-white">
-            {data.density}
+            {data.density || "N/A"}
             <span className="text-lg font-medium text-slate-500"> / km²</span>
           </p>
           <p className="text-xs text-slate-500 mt-1">
@@ -56,7 +61,7 @@ const DemographicsCard = ({ data }) => {
             Youth Ratio
           </p>
           <p className="text-4xl font-black text-purple-400">
-            {data.youth_ratio}%
+            {data.youth_ratio || 0}%
           </p>
           <p className="text-xs text-slate-500 mt-1">
             Percentage of youth population
@@ -110,7 +115,7 @@ const DemographicsCard = ({ data }) => {
 
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-3xl font-black text-white">
-                {data.male_ratio}%
+                {maleRatio}%
               </span>
               <span className="text-xs uppercase text-slate-500">
                 Male Population
@@ -121,13 +126,13 @@ const DemographicsCard = ({ data }) => {
           <div className="flex justify-between w-full max-w-xs mt-6 text-sm">
             <div>
               <span className="text-indigo-400 font-bold">
-                {data.male_ratio}%
+                {maleRatio}%
               </span>
               <p className="text-xs text-slate-500">Male</p>
             </div>
             <div className="text-right">
               <span className="text-purple-400 font-bold">
-                {data.female_ratio}%
+                {femaleRatio}%
               </span>
               <p className="text-xs text-slate-500">Female</p>
             </div>
