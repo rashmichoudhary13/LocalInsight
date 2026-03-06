@@ -45,7 +45,7 @@ const StrategyDashboard = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.post('http://localhost:5000/api/generate_strategy', formData);
+            const response = await axios.post('http://127.0.0.1:5000/api/generate_strategy', formData);
             setData(response.data);
         } catch (error) {
             console.error("Error generating plan:", error);

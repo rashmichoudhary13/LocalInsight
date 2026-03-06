@@ -96,10 +96,10 @@ const CityDataForm = () => {
             className="w-full appearance-none bg-[#0f1535]/90 text-cyan-100 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400"
           >
             <option value="">Select Business Category</option>
-            <option value="bakery">Bakery</option>
-            <option value="cafe">Cafe</option>
-            <option value="shoes">Shoes</option>
-            <option value="watch">Watch</option>
+            <option value="Bakery">Bakery</option>
+            <option value="Cafe">Cafe</option>
+            <option value="Shoe">Shoes</option>
+            <option value="Watch">Watch</option>
           </select>
         </div>
 

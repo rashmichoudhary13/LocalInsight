@@ -50,9 +50,10 @@ class BusinessPlan(BaseModel):
 class PlanGenerator:
     def __init__(self, api_key: str):
         self.llm = ChatGoogleGenerativeAI(
-            model="gemini-2.5-flash", # Optimized for structured output
+            model="gemini-2.5-flash", # Switch to 2.5 to avoid 2.0 quota exhaustion
             temperature=0.4,
-            google_api_key=api_key
+            google_api_key=api_key,
+            request_timeout=60
         )
         self.parser = PydanticOutputParser(pydantic_object=BusinessPlan)
 

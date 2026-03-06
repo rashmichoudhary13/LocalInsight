@@ -12,7 +12,16 @@ from utils import make_json_safe
 from sklearn.preprocessing import LabelEncoder
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+# Explicitly allow common local origins to prevent CORS issues
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000"]}}, supports_credentials=True)
+
+@app.after_request
+def add_cors_headers(response):
+    # Fallback to ensure headers are present even if middleware misses them
+    response.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin', '*')
+    response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT, DELETE'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    return response
 
 @app.route("/")
 def health_check():
@@ -81,99 +90,101 @@ def predict_city():
     if not pincode or not category:
         return jsonify({"error": "Both 'pincode' and 'business_category' are required"}), 400
 
-    # Lookup the row by pincode
-    city_data = df[df["Pincode"] == int(pincode)]
-    if city_data.empty:
-        return jsonify({"error": f"Pincode '{pincode}' not found in database"}), 404
-    
-    row = city_data.iloc[0]
-    city = row["City"]
-
-    # ==============================
-    # Feature Engineering (EXISTING)
-    # ==============================
-    residential_density = row["Population"] / max(row["Total_Area"], 1)
-
-    input_df = pd.DataFrame([{
-        "Competitor_Count": row.get("Competitor_Count", 0),
-        "Mall_Proximity": row.get("Mall_Proximity", 0),
-        "Footfall_Proxy": row.get("Footfall_Proxy", 0),
-        "Rent": row.get("Rent", 0),
-        "Avg_Income": row.get("Avg_Income", 0),
-        "Residential_density": residential_density,
-        "Youth_Pop_%": row.get("Youth_Pop_%", 0),
-        "Business_Category": category
-    }])
-
-    if "Business_Category" in categorical_columns:
-        input_df["Business_Category"] = input_df["Business_Category"].astype("category")
-
-    # ==============================
-    # MODEL PREDICTION (EXISTING)
-    # ==============================
-    proba = location_model.predict_proba(input_df)[0]
-    predicted_index = np.argmax(proba)
-    prediction = label_encoder.inverse_transform([predicted_index])[0]
-    city_index_score = round(proba[predicted_index] * 100, 2)
-
-    # ==============================
-    # Additional Analytics (EXISTING)
-    # ==============================
-    population = row.get("Population", 0)
-    total_area = row.get("Total_Area", 1)
-    density = population / max(total_area, 1)
-
-    # ==============================
-    # NEW LOGIC INTEGRATION
-    # ==============================
-    # Fetching the new structured data (markers and brand counts) 
-    # from the updated fetch_top_shops in services.py
-    market_analysis = fetch_top_shops(city, category)
-
-    response_payload = {
-        "city": city,
-        "pincode": pincode,
-        "product_type": category,
-        "predicted_category": prediction,
-        "city_index_score": city_index_score,
-
-        # Full Probability Distribution
-        "confidence_distribution": {
-            "Low": round(proba[0] * 100, 2),
-            "Medium": round(proba[1] * 100, 2),
-            "High": round(proba[2] * 100, 2),
-        },
-
-        # Demographics
-        "population": population,
-        "density": round(density, 2),
-        "male_ratio": row.get("Male_Pop_%", 0),
-        "female_ratio": row.get("Female_Pop_%", 0),
-        "youth_ratio": row.get("Youth_Pop_%", 0),
-
-        # Economy
-        "avg_income": row.get("Avg_Income", 0),
-        "rent": row.get("Rent", 0),
-
-        # Market Factors
-        "footfall_monthly": row.get("Footfall_Proxy", 0),
-        "competitor_count": row.get("Competitor_Count", 0),
-        "mall_proximity": row.get("Mall_Proximity", 0),
-
-        # Insights
-        "insights": generate_ai_insights(row.to_dict()),
-
-        # NEW DATA STRUCTURE PASS-THROUGH
-        # market_analysis contains: {"markers": [...], "brand_counts": {...}}
-        "market_analysis": market_analysis,
+    try:
+        # Lookup the row by pincode
+        # Using int(float()) to handle strings like '414001.0'
+        pincode_int = int(float(pincode))
+        city_data = df[df["Pincode"] == pincode_int]
         
-        # Keeping "shops" key for backward compatibility if needed, 
-        # referencing the markers list specifically
-        "shops": market_analysis.get("markers", [])
-    }
+        if city_data.empty:
+            return jsonify({"error": f"Pincode '{pincode}' not found in database"}), 404
+        
+        row = city_data.iloc[0]
+        city = row["City"]
 
-    return jsonify(make_json_safe(response_payload))
+        # ==============================
+        # Feature Engineering 
+        # ==============================
+        residential_density = row["Population"] / max(row["Total_Area"], 1)
 
+        input_df = pd.DataFrame([{
+            "Competitor_Count": row.get("Competitor_Count", 0),
+            "Mall_Proximity": row.get("Mall_Proximity", 0),
+            "Footfall_Proxy": row.get("Footfall_Proxy", 0),
+            "Rent": row.get("Rent", 0),
+            "Avg_Income": row.get("Avg_Income", 0),
+            "Residential_density": residential_density,
+            "Youth_Pop_%": row.get("Youth_Pop_%", 0),
+            "Business_Category": category
+        }])
+
+        if "Business_Category" in categorical_columns:
+            input_df["Business_Category"] = input_df["Business_Category"].astype("category")
+
+        # ==============================
+        # MODEL PREDICTION
+        # ==============================
+        proba = location_model.predict_proba(input_df)[0]
+        predicted_index = np.argmax(proba)
+        prediction = label_encoder.inverse_transform([predicted_index])[0]
+        city_index_score = round(proba[predicted_index] * 100, 2)
+
+        # ==============================
+        # Additional Analytics
+        # ==============================
+        population = row.get("Population", 0)
+        total_area = row.get("Total_Area", 1)
+        density = population / max(total_area, 1)
+
+        # ==============================
+        # NEW LOGIC INTEGRATION
+        # ==============================
+        market_analysis = fetch_top_shops(city, category)
+
+        response_payload = {
+            "city": city,
+            "pincode": pincode,
+            "product_type": category,
+            "predicted_category": prediction,
+            "city_index_score": city_index_score,
+
+            # Full Probability Distribution
+            "confidence_distribution": {
+                "Low": round(proba[0] * 100, 2),
+                "Medium": round(proba[1] * 100, 2),
+                "High": round(proba[2] * 100, 2),
+            },
+
+            # Demographics
+            "population": population,
+            "density": round(density, 2),
+            "male_ratio": row.get("Male_Pop_%", 0),
+            "female_ratio": row.get("Female_Pop_%", 0),
+            "youth_ratio": row.get("Youth_Pop_%", 0),
+
+            # Economy
+            "avg_income": row.get("Avg_Income", 0),
+            "rent": row.get("Rent", 0),
+
+            # Market Factors
+            "footfall_monthly": row.get("Footfall_Proxy", 0),
+            "competitor_count": row.get("Competitor_Count", 0),
+            "mall_proximity": row.get("Mall_Proximity", 0),
+
+            # Insights
+            "insights": generate_ai_insights(row.to_dict()),
+
+            # NEW DATA STRUCTURE PASS-THROUGH
+            "market_analysis": market_analysis,
+            "shops": market_analysis.get("markers", [])
+        }
+
+        return jsonify(make_json_safe(response_payload))
+
+    except Exception as e:
+        print(f"Error in predict_city: {str(e)}")
+        return jsonify({"error": "Failed to predict city viability", "details": str(e)}), 500
+    
 # -------- Strategy & Business Plan Generator --------
 @app.route("/api/generate_strategy", methods=["POST"])
 def generate_strategy():

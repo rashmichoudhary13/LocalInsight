@@ -160,7 +160,7 @@ const Sparkles = ({ className }) => (
 // --- Circular Progress ---
 const CircularProgress = ({ score, size = "normal" }) => {
   const numericScore = typeof score === "number" ? score : parseFloat(score) || 0;
-  const percentage = Math.min(Math.max(numericScore * 50, 0), 100);
+  const percentage = Math.min(Math.max(numericScore * 18, 0), 99);
   const radius = size === "small" ? 35 : 52;
   const strokeWidth = size === "small" ? 8 : 10;
   const circumference = 2 * Math.PI * radius;
@@ -202,7 +202,7 @@ const CircularProgress = ({ score, size = "normal" }) => {
       </svg>
       <div className="absolute flex flex-col items-center">
         <span className={`font-black text-white ${fontSize} drop-shadow-md`}>
-          {(numericScore * 50).toFixed(0)}%
+          {percentage.toFixed(0)}%
         </span>
         <span className="text-[7px] font-black text-slate-500 uppercase tracking-widest -mt-1 opacity-80">Score</span>
       </div>

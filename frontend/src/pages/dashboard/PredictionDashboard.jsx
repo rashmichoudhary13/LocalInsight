@@ -54,7 +54,7 @@ function PredictionDashboard() {
           <div className="space-y-4">
             {topLocations.map((loc, i) => {
               const scoreRaw = parseFloat(loc.opportunity_score || loc.rank_score || 0);
-              const scorePercent = (scoreRaw * 50).toFixed(0);
+              const scorePercent = Math.min((scoreRaw * 18), 99).toFixed(0);
 
               // Rank-based themes
               const themes = [

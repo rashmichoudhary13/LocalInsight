@@ -127,7 +127,7 @@ const UserForm = () => {
             <option value="Cafe" className="bg-[#1a1f3c] text-cyan-200">
               Cafe
             </option>
-            <option value="Shoes" className="bg-[#1a1f3c] text-cyan-200">
+            <option value="Shoe" className="bg-[#1a1f3c] text-cyan-200">
               Shoes
             </option>
             <option value="Watch" className="bg-[#1a1f3c] text-cyan-200">

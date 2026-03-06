@@ -65,6 +65,10 @@ def generate_ai_insights(data):
     if not gemini_model:
         return "AI insights unavailable."
 
-    prompt = f"Analyze business potential using this data: {data}. Respond in 4–5 concise sentences."
-    response = gemini_model.generate_content(prompt)
-    return getattr(response, "text", "AI response unavailable.")
+    try:
+        prompt = f"Analyze business potential using this data: {data}. Respond in 4–5 concise sentences."
+        response = gemini_model.generate_content(prompt)
+        return getattr(response, "text", "AI response unavailable.")
+    except Exception as e:
+        print(f"Gemini Error: {e}")
+        return "AI strategic insight is currently being calculated. Please check back shortly."
