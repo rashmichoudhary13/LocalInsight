@@ -317,7 +317,7 @@ const StrategyDashboard = () => {
                                                     Strategic Assessment Report
                                                 </div>
                                                 <h3 className="text-5xl font-black text-white tracking-tighter leading-none">
-                                                    {data.business_plan.business_name}
+                                                    {data.business_plan?.business_name}
                                                 </h3>
                                                 <div className="flex flex-wrap items-center gap-6 text-slate-500 font-bold text-[10px] uppercase tracking-widest">
                                                     <div className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-xl border border-white/5"><MapPin className="w-3 h-3 text-indigo-500" /> {data.location}</div>

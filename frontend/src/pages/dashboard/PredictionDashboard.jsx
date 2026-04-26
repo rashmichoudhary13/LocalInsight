@@ -116,7 +116,7 @@ function PredictionDashboard() {
                       <MapPin className="w-3.5 h-3.5 text-slate-400" />
                     </div>
                     <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                      {loc.City || loc.District}
+                      Pincode: {loc.Pincode || loc.City}
                     </span>
                   </div>
 

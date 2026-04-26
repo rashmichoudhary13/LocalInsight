@@ -99,7 +99,7 @@ function Sidebar({ data }) {
           </div>
 
           {/* Score Circle */}
-          <div className="absolute top-6 right-6 flex items-center justify-center">
+          <div className="absolute top-14 right-6 flex items-center justify-center">
             <div className="w-16 h-16 rounded-full border-2 border-indigo-500/50 flex items-center justify-center relative bg-[#1a1a2e]">
               <div className="text-sm font-black font-mono text-indigo-400">
                 {parseFloat(data.city_index_score || 0).toFixed(1)}

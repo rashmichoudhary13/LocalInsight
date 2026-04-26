@@ -255,7 +255,7 @@ const UserFormCardContent = ({ data, formatNumber }) => (
       </div>
       <p className="text-xs font-medium text-slate-500 capitalize flex items-center gap-1.5 mt-1">
         <div className="w-1 h-1 bg-indigo-500 rounded-full" />
-        {data.Area ? `${data.City || data.city}, ${data.District}` : data.District}
+        Total Area: {data.Total_Area} sq.km
       </p>
     </div>
 
@@ -265,12 +265,12 @@ const UserFormCardContent = ({ data, formatNumber }) => (
         <InfoBlock
           icon={<FootprintsIcon className="w-5 h-5 text-indigo-400" />}
           label="Monthly Traffic"
-          value={formatNumber(data.FootFalls_per_month)}
+          value={formatNumber(data.Footfall_Proxy)}
         />
         <InfoBlock
           icon={<DollarSignIcon className="w-5 h-5 text-emerald-400" />}
           label="Area Avg. Income"
-          value={`₹${formatNumber(data.avg_income)}`}
+          value={`₹${formatNumber(data.Avg_Income)}`}
         />
       </div>
 
@@ -284,7 +284,7 @@ const UserFormCardContent = ({ data, formatNumber }) => (
           <InfoRow
             icon={<UsersIcon className="w-4 h-4 text-indigo-400" />}
             label="Youth Ratio"
-            value={`${((data.Youth_Ratio || 0) * 100).toFixed(0)}%`}
+            value={`${data?.["Youth_Pop_%" ]|| 0}%`}
           />
           <InfoRow
             icon={<HomeIcon className="w-4 h-4 text-indigo-400" />}
@@ -294,13 +294,13 @@ const UserFormCardContent = ({ data, formatNumber }) => (
           <InfoRow
             icon={<BriefcaseIcon className="w-4 h-4 text-indigo-400" />}
             label="Industry"
-            value={data.product_type}
+            value={data.Business_Category}
             capitalize
           />
           <InfoRow
             icon={<StoreIcon className="w-4 h-4 text-indigo-400" />}
             label="Comps"
-            value={data.similar_shop}
+            value={data.Competitor_Count}
           />
         </div>
       </div>

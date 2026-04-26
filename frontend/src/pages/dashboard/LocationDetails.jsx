@@ -19,7 +19,8 @@ import {
 
 // 1. Opportunity Score Gauge (Card 1)
 const ScoreGauge = ({ score }) => {
-  const percentage = Math.min(Math.max(score * 50, 0), 100);
+  const percentage = Math.min((score * 18), 99).toFixed(0);
+  const scorePercent = Math.min((score * 18), 99).toFixed(0)
   const radius = 85;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (percentage / 100) * circumference;
@@ -60,7 +61,7 @@ const ScoreGauge = ({ score }) => {
 
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <motion.span className={`text-6xl font-black ${theme.text} tracking-tighter`}>
-            {(score * 50).toFixed(0)}%
+            {scorePercent}%
           </motion.span>
           <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Opportunity Score</p>
         </div>
