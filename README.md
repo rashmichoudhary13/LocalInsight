@@ -56,7 +56,7 @@ LocalInsight/
 - **Framework**: Flask (Python)
 - **Data Analytics**: Pandas, NumPy
 - **AI Core**: Google Gemini API (`google-generativeai`)
-- **Authentication**: Custom JWT-based tokens / provider integration
+- **Authentication**: Firebase auth
 
 ---
 

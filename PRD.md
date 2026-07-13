@@ -64,7 +64,7 @@ LocalInsight provides a one-stop-shop for "Retail Intelligence". By analyzing de
 *   **Framework**: Flask (Python)
 *   **Data Processing**: Pandas, NumPy
 *   **AI Engine**: Google Gemini API (via `google-generativeai`)
-*   **Auth**: Custom JWT-based or integrated provider (e.g., Clerk as per history)
+*   **Auth**: Firebase auth
 
 ## 8. Data Model & Logic
 *   **Opportunity Score**: `(Population * Youth_Ratio * Footfalls) / (Similar_Shops + 1) * Rent_Factor`
