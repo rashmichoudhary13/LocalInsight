@@ -60,6 +60,17 @@ LocalInsight/
 
 ---
 
+## screenshot
+
+<img width="700" height="400" alt="localinsight" src="https://github.com/user-attachments/assets/6f715ebc-46e1-4e71-8908-c3dbb243fac9" /> <br>
+
+<img width="700" height="400" alt="7" src="https://github.com/user-attachments/assets/7d036acf-076a-4e12-a4f0-40aceb0586b7" /><br>
+
+<img width="700" height="400" alt="8" src="https://github.com/user-attachments/assets/c3003a7c-a44f-4ce0-99aa-bb0529bfcfc4" /><br>
+
+<img width="700" height="400" alt="9" src="https://github.com/user-attachments/assets/97f1b22d-a3de-4723-9414-eea2f3c81c10" /><br>
+
+
 ## ⚙️ Getting Started
 
 ### Prerequisites
@@ -96,6 +107,8 @@ Ensure you have the following installed:
    Create a `.env` file in the `backend/` directory:
    ```env
    GEMINI_API_KEY=your_google_gemini_api_key_here
+   SERP_API_KEY=your_key
+   GEOAPIFY_API_KEY=your_key
    ```
 
 5. **Start the Flask server**:
