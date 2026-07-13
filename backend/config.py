@@ -7,6 +7,7 @@ load_dotenv()
 # -------- API Keys --------
 SERPAPI_KEY = os.getenv("SERP_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+print(os.getenv("GEMINI_API_KEY"))
 
 # -------- Geoapify --------
 GEOAPIFY_API_KEY = os.getenv("GEOAPIFY_API_KEY")

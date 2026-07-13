@@ -50,7 +50,7 @@ class BusinessPlan(BaseModel):
 class PlanGenerator:
     def __init__(self, api_key: str):
         self.llm = ChatGoogleGenerativeAI(
-            model="gemini-2.5-flash", # Switch to 2.5 to avoid 2.0 quota exhaustion
+            model="gemini-flash-latest", # Switch to 2.5 to avoid 2.0 quota exhaustion
             temperature=0.4,
             google_api_key=api_key,
             request_timeout=60
